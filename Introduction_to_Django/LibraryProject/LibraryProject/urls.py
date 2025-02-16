@@ -1,4 +1,5 @@
-i"""
+#!/bin/bash
+"""
 URL configuration for LibraryProject project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
