@@ -1,6 +1,6 @@
 from django.db import models
 
-book.all()
+books.all()
 
 Library.objects.get(name=library_name)
 
