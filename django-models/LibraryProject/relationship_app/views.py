@@ -1,9 +1,9 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from .models import Book
 
 def book_list(request):
-      """Retrieves all books and renders a template displaying the list."""
-      books = Book.objects.all()  # Fetch all book instances from the database
-      context = {'book_list': books}  # Create a context dictionary with book list
-      return render(request, 'books/book_list.html', context)
-# Create your views here.
+    books = Book.objects.all()
+    book_details = "\n".join([f"{book.title} by {book.author.name}" for book in books])
+    return HttpResponse(f"<pre>{book_details}</pre>")
+
