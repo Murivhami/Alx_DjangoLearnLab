@@ -24,3 +24,6 @@ class SignUpView(CreateView):
 
 
 
+
+
+
