@@ -10,3 +10,6 @@ from .models import Library
 
 class LibraryDetailView(DetailView):
     template_name = 'relationship_app/library_detail.html'
+
+def login(request):
+    retrun render(request, 'login.html')
