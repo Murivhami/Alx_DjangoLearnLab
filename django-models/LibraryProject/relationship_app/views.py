@@ -11,10 +11,10 @@ from .models import Library
 class LibraryDetailView(DetailView):
     template_name = 'relationship_app/library_detail.html'
 
-from django.contrib.auth.forms import UserCreationForm, login
+from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-
+from django.contrib.auth import login
 
 
 class SignUpView(CreateView):
