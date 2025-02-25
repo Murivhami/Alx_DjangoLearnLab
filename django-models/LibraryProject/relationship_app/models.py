@@ -17,13 +17,13 @@ class Librarian(models.Model):
     library = models.OneToOneField(Library, on_delete=models.CASCADE)
 
 class UserProfile(models.Model):
-    ROLE = [
+    ROLE_CHOICES = [
         ('admin', 'Admin'),
         ('librarian', 'Librarian'),
         ('member', 'Member'),
     ]
 
-    role = models.CharField(max_length=10, choices=ROLE, default='user')
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='Member')
 
     def __str__(self):
         return f"{self.user.username} - {self.get_role_display()}"
