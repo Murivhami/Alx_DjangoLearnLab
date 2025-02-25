@@ -1,6 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
-from relationship_app.apps import UserProfile
+from django.contrib.auth.models import User, UserProfile
 
 class Author(models.Model):
     name = models.CharField(max_length=50)
@@ -17,15 +16,14 @@ class Librarian(models.Model):
     name = models.CharField(max_length=100)
     library = models.OneToOneField(Library, on_delete=models.CASCADE)
 
-class UserProfile(models.Model):
-    ROLE_CHOICES = [
+class User(UserProfile):
+    ROLE = [
         ('admin', 'Admin'),
         ('librarian', 'Librarian'),
         ('member', 'Member'),
     ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='member')
+    role = models.CharField(max_length=10, choices=ROLE, default='user')
 
     def __str__(self):
         return f"{self.user.username} - {self.get_role_display()}"
