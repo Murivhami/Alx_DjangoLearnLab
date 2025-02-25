@@ -22,3 +22,28 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('login')
     template_name = 'relationship_app/register.html'
 
+from django.shortcuts import render, redirect
+from django.http import HttpResponseForbidden
+from django.contrib.auth.decorators import login_required
+from .models import UserProfile
+
+# Admin View
+@login_required
+def admin_view(request):
+    if request.user.userprofile.role != 'Admin':
+        return HttpResponseForbidden("You are not authorized to view this page.")
+    return render(request, 'admin_view.html')
+
+# Librarian View
+@login_required
+def librarian_view(request):
+    if request.user.userprofile.role != 'Librarian':
+        return HttpResponseForbidden("You are not authorized to view this page.")
+    return render(request, 'librarian_view.html')
+
+# Member View
+@login_required
+def member_view(request):
+    if request.user.userprofile.role != 'Member':
+        return HttpResponseForbidden("You are not authorized to view this page.")
+    return render(request, 'member_view.html')
