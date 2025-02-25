@@ -16,15 +16,21 @@ class Librarian(models.Model):
     name = models.CharField(max_length=100)
     library = models.OneToOneField(Library, on_delete=models.CASCADE)
 
-
-    
-
     def __str__(self):
         return f"{self.user.username} - {self.get_role_display()}"
     
 
 def __str__(self):
     return self.name
+
+#Role based views
+    class UserProfile(models.Model):
+        ROLES=(
+            ('admin', 'Admin')
+            ('librarian', 'Librarian')
+            ('member', 'Member')
+
+    role = models.CharField(max_length=5, choices=ROLES, default='member')
 
 
 
