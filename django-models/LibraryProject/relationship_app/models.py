@@ -30,7 +30,7 @@ def __str__(self):
             ('librarian', 'Librarian'),
             ('member', 'Member'),
 
-    role = models.CharField(max_length=5, choices=ROLES, default='member')
+    role = models.CharField(max_length=12, choices=ROLES, default='member')
 
 
 
