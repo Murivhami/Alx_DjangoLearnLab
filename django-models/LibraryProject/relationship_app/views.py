@@ -22,3 +22,12 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('login')
     template_name = 'relationship_app/register.html'
 
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+
+@login_required
+def admin_view(request):
+    if request.user.role != 'admin':
+        return HttpResponseForbidden('Denied')
+    return render(request, 'admin_view.html')
+    
