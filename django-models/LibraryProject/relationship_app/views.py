@@ -22,12 +22,30 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('login')
     template_name = 'relationship_app/register.html'
 
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
 
-@login_required
-def admin_view(request):
-    if request.user.role != 'admin':
-        return HttpResponseForbidden('Denied')
-    return render(request, 'admin_view.html')
+# Role-checking functions
+def is_admin(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'admin'
+
+def is_librarian(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'librarian'
+
+def is_member(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'member'
+
+# Views with role-based access control
+@user_passes_test(is_admin, login_url='/403/')
+def admin_dashboard(request):
+    return render(request, 'relationship_app/admin_view.html')
+
+@user_passes_test(is_librarian, login_url='/403/')
+def librarian_dashboard(request):
+    return render(request, 'relationship_app/librarian_view.html')
+
+@user_passes_test(is_member, login_url='/403/')
+def member_dashboard(request):
+    return render(request, 'relationship_app/member_view.html')
+
     
