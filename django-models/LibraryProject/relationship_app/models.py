@@ -26,9 +26,9 @@ def __str__(self):
 #Role based views
     class UserProfile(models.Model):
         ROLES=(
-            ('admin', 'Admin')
-            ('librarian', 'Librarian')
-            ('member', 'Member')
+            ('admin', 'Admin'),
+            ('librarian', 'Librarian'),
+            ('member', 'Member'),
 
     role = models.CharField(max_length=5, choices=ROLES, default='member')
 
