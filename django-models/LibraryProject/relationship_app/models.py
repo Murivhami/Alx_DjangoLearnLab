@@ -16,7 +16,7 @@ class Librarian(models.Model):
     name = models.CharField(max_length=100)
     library = models.OneToOneField(Library, on_delete=models.CASCADE)
 
-class User(UserProfile):
+class UserProfile(models.Model):
     ROLE = [
         ('admin', 'Admin'),
         ('librarian', 'Librarian'),
