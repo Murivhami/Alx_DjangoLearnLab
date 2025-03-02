@@ -38,13 +38,6 @@ def __str__(self):
 
     role = models.CharField(max_length=12, choices=ROLES, default='member')
 
-#CustomUser
-from django.contrib.auth.models import AbstractUser
-from django.db.models import DateField
-from django.db import models
 
-class CustomUser(AbstractUser):
-    date_of_birth = models.DateField(null=True, blank=True)
-    profile_photo = models.ImageField(upload_to='photos/', null=True, blank=True )
     
 
