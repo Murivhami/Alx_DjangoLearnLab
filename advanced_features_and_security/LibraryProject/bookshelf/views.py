@@ -4,7 +4,7 @@ from .models import Document
 from .forms import DocumentForm
 
 @login_required
-@permission_required('yourapp.can_edit_document', raise_exception=True)
+@permission_required('bookshelf.can_edit_document', raise_exception=True)
 def edit_document(request, doc_id):
     document = get_object_or_404(Document, id=doc_id)
 
@@ -19,7 +19,7 @@ def edit_document(request, doc_id):
     return render(request, 'edit_document.html', {'form': form})
 
 @login_required
-@permission_required('yourapp.can_create_document', raise_exception=True)
+@permission_required('bookshelf.can_create_document', raise_exception=True)
 def create_document(request):
     if request.method == 'POST':
         form = DocumentForm(request.POST)
@@ -32,7 +32,7 @@ def create_document(request):
     return render(request, 'create_document.html', {'form': form})
 
 @login_required
-@permission_required('yourapp.can_delete_document', raise_exception=True)
+@permission_required('bookshelf.can_delete_document', raise_exception=True)
 def delete_document(request, doc_id):
     document = get_object_or_404(Document, id=doc_id)
     
