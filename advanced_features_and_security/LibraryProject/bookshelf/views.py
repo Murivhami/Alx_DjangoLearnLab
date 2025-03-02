@@ -9,3 +9,4 @@ def book_list(request):
     return render(request, 'bookshelf/book_list.html', {'books': books})
 
 
+from .forms import ExampleForm
