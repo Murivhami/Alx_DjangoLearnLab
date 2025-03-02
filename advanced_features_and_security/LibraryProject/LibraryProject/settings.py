@@ -53,6 +53,7 @@ MIDDLEWARE = [
 ]
 
 AUTH_USER_MODEL = 'myapp.User'
+AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
 ROOT_URLCONF = 'LibraryProject.urls'
 
