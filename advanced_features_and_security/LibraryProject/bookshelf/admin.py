@@ -15,7 +15,7 @@ class CustomUserAdmin(admin.ModelAdmin):
     date_of_birth = models.DateField(null=True, blank=True)
     profile_photo = models.ImageField(upload_to='photos/', null=True, blank=True )
 
-admin.site.register(CustomUser, CustomeUserAdmin)
+admin.site.register(CustomUser, CustomUserAdmin)
 
 
 
