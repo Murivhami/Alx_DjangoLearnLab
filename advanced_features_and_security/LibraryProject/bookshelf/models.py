@@ -19,6 +19,14 @@ class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     profile_photo = models.ImageField(upload_to='photos/', null=True, blank=True )
 
+#Permission Week11
+    class Meta:
+        permission = [("can_view", "can view"),
+                      ("can_create", "can create"), 
+                      ("can_edit", "can edit"),
+                      ("can_delete", "can delete"), 
+                     ]
+                      
 #User manager
 from django.contrib.auth.models import BaseUserManager
 
@@ -48,3 +56,6 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self.create_user(email, first_name, last_name, password, **extra_fields)
+
+
+
