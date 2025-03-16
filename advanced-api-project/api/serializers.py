@@ -13,10 +13,10 @@ class AuthorSerializer(serializers.ModelSerializer):
         model = Author
         fields = '__all__'
 
+#An author can have many books, but a book can only belong to one author. 
+
         def validate_publication_year(self, value):
             current_year = datetime.now().year
             if value > current_year:
                 raise serializers.ValidationError(f'Publication year cannot be in the future')
             return value
-
-
