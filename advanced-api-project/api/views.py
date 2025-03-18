@@ -12,7 +12,9 @@ class BookListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'author', 'publication_year']
     filter_backends = [filters.SearchFilter]
-    search_fields = ['title', 'author'}
+    search_fields = ['title', 'author']
+    filter_backends = [filters.OrderingFilter]
+    search_fields = ['title', 'publication_year']
 
 class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
