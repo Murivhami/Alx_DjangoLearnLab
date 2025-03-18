@@ -11,6 +11,8 @@ class BookListView(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'author', 'publication_year']
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'author'}
 
 class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
