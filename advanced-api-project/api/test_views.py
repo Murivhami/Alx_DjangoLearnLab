@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from rest_framework.test import APITestCase
 from rest_framework import status
 from api.models import Book
@@ -7,3 +8,6 @@ class BookAPITestCase(APITestCase):
        data = {'title':'Test Book', 'author': 'John Doe', 'publication_year':2022}
        response = self.client.post('/api/books/', data)
        self.assertEqual(response
+=======
+
+>>>>>>> bc0df0a027a1dad666e5431acaf11a103095b547
