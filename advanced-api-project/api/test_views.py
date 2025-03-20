@@ -6,6 +6,15 @@ class BookAPITestCase(APITestCase):
 
     def setUp(self):
         self.author = Author.objects.create(name='John Doe')
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+
+    def test_authenticated_request(self):
+    login_successful = self.client.login(username='testuser', password='testpassword')
+    self.assertTrue(login_successful)  
+
+    response = self.client.get('/protected-endpoint/')
+    self.assertEqual(response.status_code, 200) 
+    
 #test case for creating books
     def test_create_book(self):
         author = Author.objects.create(name='John Doe')
