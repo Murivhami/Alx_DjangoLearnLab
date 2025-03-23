@@ -1,15 +1,14 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Django Blog{% endblock %}
+{% block title %}Login{% endblock %}
+
 {% block content %}
-        {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
-
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<h2>Login</h2>
 <form method="post" action="{% url 'login' %}">
-    {% csrf_token %} {{ form.as_p }}
-
-    <input type="submit" value="login" style="padding: 10 px 15 px; background-color: #333; color: white;" />
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Login">
 </form>
-        <!-- Page-specific content goes here -->
-        {% endblock %}
+{% endblock %}
