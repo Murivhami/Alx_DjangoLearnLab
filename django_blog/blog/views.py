@@ -89,7 +89,7 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return self.object.post.get_absolute_url()  # Redirect to the post's detail page
 
-
+#Comment edit and delete authentication
 from django.views.generic.edit import DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
@@ -106,5 +106,34 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.object.post.get_absolute_url()  
 
 
+#Post edit and comment auth
+from .forms import PostForm
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/post_edit.html'
 
+    def test_func(self):
+        # Ensure the logged-in user is the author of the comment
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()  # Redirect to the post's detail page
+
+#Comment edit and delete authentication
+from django.views.generic.edit import DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    template_name = 'blog/post_delete.html'
+
+    def test_func(self):
+        # Ensure the logged-in user is the author of the comment
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()  
 # Create your views here.
