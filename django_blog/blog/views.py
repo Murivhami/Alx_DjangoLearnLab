@@ -4,6 +4,8 @@ from django.views.generic import CreateView, TemplateView
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 class RegisterView(CreateView):
     form_class = UserCreationForm
@@ -38,6 +40,7 @@ def custom_logout_view(request):
 from rest_framework import generics
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
+from .forms import CommentForm
 
 class PostListView(generics.ListAPIView):
     queryset = Post.objects.all()
@@ -73,13 +76,34 @@ class CommentCreateView(generics.CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
-class CommentUpdateView(generics.UpdateAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/edit_comment.html'
 
-class CommentDeleteView(generics.DestroyAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    def test_func(self):
+        # Ensure the logged-in user is the author of the comment
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()  # Redirect to the post's detail page
+
+
+from django.views.generic.edit import DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/confirm_delete_comment.html'
+
+    def test_func(self):
+        # Ensure the logged-in user is the author of the comment
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()  
 
 
 
