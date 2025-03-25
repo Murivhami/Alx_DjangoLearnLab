@@ -34,6 +34,30 @@ def custom_logout_view(request):
     logout(request)  # Logs out 
     return redirect('/')
 
+#CRUD Operations
+from rest_framework import generics
+from .models import Post
+from .serializers import PostSerializer
+
+class PostListView(generics.ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+class PostDetailView(generics.DetailAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+class PostCreateView(generics.CreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+class PostUpdateView(generics.UpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+class PostDeleteView(generics.DeleteAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
 
 
 
