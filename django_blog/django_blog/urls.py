@@ -16,15 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from blog.views import PostCreateView, PostDeleteView, PostDetailView, PostListView, PostUpdateView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('posts/', PostListView.as_view(), name = 'post_list'),
-    path('posts/new/', PostCreateView.as_view(), name = 'post_create'),
-    path('posts/<int:pk>', PostDetailView.as_view(), name = 'post_detail'),
-    path('posts/<int:pk>/edit/', PostUpdateView.as_view(), name = 'post_update'),
-    path('posts/<int:pk>/delete', PostDeleteView.as_view(), name = 'post_delete'),
+    
     #path('blog/', include('blog.urls')),
 ]

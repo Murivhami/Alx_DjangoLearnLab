@@ -155,3 +155,18 @@ def create_post(request):
     
     return render(request, 'blog/create_post.html', {'form': form})
 
+#Filters
+from django.db.models import Q
+from django.shortcuts import render
+from .models import Post
+
+def post_search(request):
+    query = request.GET.get('query', '') 
+    results = Post.objects.filter(
+        Q(title__icontains=query) | Q(content__icontains=query) | Q(tags__name__icontains=query)
+    ).distinct()
+
+    return render(request, 'blog/post_search.html', {'query': query, 'results': results})
+
+
+
