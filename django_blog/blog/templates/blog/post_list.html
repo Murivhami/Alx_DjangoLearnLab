@@ -1,1 +1,6 @@
+<p>Available Tags:
+    {% for tag in post.tags.all %}
+        <a href="{% url 'post_by_tag' tag.slug %}">{{ tag.name }}</a>
+    {% endfor %}
+</p>
 
