@@ -173,12 +173,14 @@ from django.shortcuts import get_object_or_404
 from taggit.models import Tag
 from .models import Post
 
+#Allows for viewing of the post_list.html templates to display a list of posts.
 class PostByTagListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'  
     context_object_name = 'posts'
 
-    def get_queryset(self):
+    
+    def get_queryset(self): #retrieves tags through the slug.
         tag_slug = self.kwargs.get('tag_slug')
         self.tag = get_object_or_404(Tag, slug=tag_slug)
         return Post.objects.filter(tags__in=[self.tag])
