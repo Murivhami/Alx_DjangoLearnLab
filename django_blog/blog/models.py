@@ -15,4 +15,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField(auto_now_add=True)
 
+class Tag(models.Model):
+    name = models.TextField(max_length=255)
+    post = models.ManyToManyField(Post)
 # Create your models here.

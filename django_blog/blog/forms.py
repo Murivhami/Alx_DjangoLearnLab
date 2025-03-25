@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Post, Comment
+from taggit.forms import TagField
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -10,9 +11,10 @@ class CustomUserCreationForm(UserCreationForm):
         fields = '__all__'
 
 class PostForm(forms.ModelForm):
+    tags = TagField()
     class Meta:
         model = Post
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'tags']
 
     def acceptable_title(self):
         title = self.accepted_data.get('title')
