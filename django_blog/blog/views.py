@@ -33,7 +33,7 @@ from django.shortcuts import redirect
 from django.contrib.auth import logout
 
 def custom_logout_view(request):
-    logout(request)  # Logs out 
+    logout(request)  
     return redirect('/')
 
 #CRUD Operations
@@ -82,12 +82,12 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'blog/edit_comment.html'
 
     def test_func(self):
-        # Ensure the logged-in user is the author of the comment
+        
         comment = self.get_object()
         return self.request.user == comment.author
 
     def get_success_url(self):
-        return self.object.post.get_absolute_url()  # Redirect to the post's detail page
+        return self.object.post.get_absolute_url()  
 
 #Comment edit and delete authentication
 from django.views.generic.edit import DeleteView
@@ -98,7 +98,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = 'blog/confirm_delete_comment.html'
 
     def test_func(self):
-        # Ensure the logged-in user is the author of the comment
+        
         comment = self.get_object()
         return self.request.user == comment.author
 
@@ -114,12 +114,12 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'blog/post_edit.html'
 
     def test_func(self):
-        # Ensure the logged-in user is the author of the comment
+        
         comment = self.get_object()
         return self.request.user == comment.author
 
     def get_success_url(self):
-        return self.object.post.get_absolute_url()  # Redirect to the post's detail page
+        return self.object.post.get_absolute_url()  
 
 #Comment edit and delete authentication
 from django.views.generic.edit import DeleteView
@@ -130,10 +130,28 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = 'blog/post_delete.html'
 
     def test_func(self):
-        # Ensure the logged-in user is the author of the comment
+      
         comment = self.get_object()
         return self.request.user == comment.author
 
     def get_success_url(self):
         return self.object.post.get_absolute_url()  
-# Create your views here.
+    
+# Creating posts by authenticated users
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+
+@login_required
+def create_post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('post_list')
+    else:
+        form = PostForm()
+    
+    return render(request, 'blog/create_post.html', {'form': form})
+
