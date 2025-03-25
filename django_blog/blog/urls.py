@@ -1,6 +1,6 @@
 from django.urls import path, include
 from blog.views import RegisterView, LogoutView, LoginView
-from blog.views import PostCreateView, PostDeleteView, PostDetailView, PostListView, PostUpdateView
+from blog.views import PostCreateView, PostDeleteView, PostDetailView, PostListView, PostUpdateView, CommentCreateView, CommentDeleteView, CommentDetailView, CommentListView, CommentUpdateView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name = 'register'),
@@ -12,6 +12,11 @@ urlpatterns = [
     path('post/<int:pk>', PostDetailView.as_view(), name = 'post_detail'),
     path('post/<int:pk>/update/', PostUpdateView.as_view(), name = 'post_update'),
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name = 'post_delete'),
+    path('comment/', CommentListView.as_view(), name = 'comment_list'),
+    path('comment/new/', CommentCreateView.as_view(), name = 'comment_create'),
+    path('comment/<int:pk>', CommentDetailView.as_view(), name = 'comment_detail'),
+    path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name = 'comment_update'),
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name = 'comment_delete'),
 
 ]
 
