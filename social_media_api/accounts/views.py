@@ -23,42 +23,54 @@ class LoginView(views.APIView):
             return Response({'token': token.key})
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
-from rest_framework import permissions, status
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from django.contrib.auth import get_user_model
+class FollowUserView(generics.GenericAPIView):
+    """
+    API view to follow another user.
+    """
+    permission_classes = [IsAuthenticated]
 
-User = get_user_model()
+    def post(self, request, user_id):
+        user_to_follow = get_object_or_404(CustomUser, id=user_id)
 
-# Following a User
-@api_view(['POST'])
-def follow_user(request, user_id):
-    try:
-        user_to_follow = User.objects.get(id=user_id)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    
-    user = request.user
-    if user == user_to_follow:
-        return Response({"error": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+        if request.user == user_to_follow:
+            return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
 
-    user.following.add(user_to_follow)
-    return Response({"message": f"Now following {user_to_follow.username}"}, status=status.HTTP_200_OK)
+        request.user.following.add(user_to_follow)
+        return Response({"detail": f"You are now following {user_to_follow.username}."}, status=status.HTTP_200_OK)
 
-# Unfollowing a User
-@api_view(['POST'])
-def unfollow_user(request, user_id):
-    try:
-        user_to_unfollow = User.objects.get(id=user_id)
-    except User.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    
-    user = request.user
-    if user == user_to_unfollow:
-        return Response({"error": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+class UnfollowUserView(generics.GenericAPIView):
+    """
+    API view to unfollow another user.
+    """
+    permission_classes = [IsAuthenticated]
 
-    user.following.remove(user_to_unfollow)
-    return Response({"message": f"Unfollowed {user_to_unfollow.username}"}, status=status.HTTP_200_OK)
+    def post(self, request, user_id):
+        user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
 
+        if request.user == user_to_unfollow:
+            return Response({"detail": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
 
-# Create your views here.
+        request.user.following.remove(user_to_unfollow)
+        return Response({"detail": f"You have unfollowed {user_to_unfollow.username}."}, status=status.HTTP_200_OK)
+
+class ListFollowersView(generics.ListAPIView):
+    """
+    API view to list a user's followers.
+    """
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = get_object_or_404(CustomUser, id=self.kwargs["user_id"])
+        return user.followers.all()
+
+class ListFollowingView(generics.ListAPIView):
+    """
+    API view to list users that the current user is following.
+    """
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = get_object_or_404(CustomUser, id=self.kwargs["user_id"])
+        return user.following.all()
