@@ -37,4 +37,6 @@ class BookDeleteView(generics.DestroyAPIView):
     serializer_class = BookSerializer
     #permission_classes = [IsAuthenticated]
     
-# Create your views here.
+#COMMENT CRUD OPERATIONS
+
+# # Create your views here.

@@ -20,7 +20,7 @@ class PostForm(forms.ModelForm):
     def acceptable_title(self):
         title = self.accepted_data.get('title')
         if len(title) < 5:
-            raise forms.ValidationError("Title must be at least 5 characters long.")
+            raise forms.ValidationError("Title at least 5 characters long.")
         return title
 
 class CommentForm(forms.ModelForm):
