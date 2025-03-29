@@ -23,6 +23,14 @@ class LoginView(views.APIView):
             return Response({'token': token.key})
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
+# accounts/views.py
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from .models import CustomUser
+from .serializers import UserSerializer
+
 class FollowUserView(generics.GenericAPIView):
     """
     API view to follow another user.
@@ -30,7 +38,7 @@ class FollowUserView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, user_id):
-        user_to_follow = get_object_or_404(CustomUser, id=user_id)
+        user_to_follow = get_object_or_404(CustomUser.objects.all(), id=user_id)
 
         if request.user == user_to_follow:
             return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
@@ -45,7 +53,7 @@ class UnfollowUserView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, user_id):
-        user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
+        user_to_unfollow = get_object_or_404(CustomUser.objects.all(), id=user_id)
 
         if request.user == user_to_unfollow:
             return Response({"detail": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
@@ -54,23 +62,19 @@ class UnfollowUserView(generics.GenericAPIView):
         return Response({"detail": f"You have unfollowed {user_to_unfollow.username}."}, status=status.HTTP_200_OK)
 
 class ListFollowersView(generics.ListAPIView):
-    """
-    API view to list a user's followers.
-    """
+    
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = get_object_or_404(CustomUser, id=self.kwargs["user_id"])
+        user = get_object_or_404(CustomUser.objects.all(), id=self.kwargs["user_id"])
         return user.followers.all()
 
 class ListFollowingView(generics.ListAPIView):
-    """
-    API view to list users that the current user is following.
-    """
+   
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = get_object_or_404(CustomUser, id=self.kwargs["user_id"])
+        user = get_object_or_404(CustomUser.objects.all(), id=self.kwargs["user_id"])
         return user.following.all()
