@@ -21,7 +21,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.set_password(password)  # Hash the password
         user.save()
         
-        token, created = Token.objects.get_or_create(user=user)
+        token, created = Token.objects.create(user=user)
         return user
 
 class TokenSerializer(serializers.ModelSerializer):
