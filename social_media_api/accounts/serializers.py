@@ -9,13 +9,17 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    
     class Meta:
         model = get_user_model()
         fields = ['username', 'email', 'password', 'bio', 'profile_picture']
     
     def create(self, validated_data):
-        user = get_user_model().objects.create_user(**validated_data)
-        return user
+        password = validated_data.pop('password')
+        user = get_user_model().objects.create_user(**validated_data)  # Create user
+        user.set_password(password)  # Hash the password
+        user.save()
 
 class TokenSerializer(serializers.ModelSerializer):
     class Meta:
