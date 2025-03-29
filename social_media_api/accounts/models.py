@@ -9,7 +9,7 @@ class Followers(models.Model):
     pass
 
 class CustomUser(AbstractUser):
-    bio = models.CharField(max_length=255)
+    bio = models.TextField(max_length=255)
     profile_picture = models.ImageField(upload_to='pics/')
     followers = models.ManyToManyField('self',related_name='followed_by', symmetrical=False, blank=True)
 
