@@ -27,25 +27,11 @@ from rest_framework import permissions, generics
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import get_user_model
-from rest_framework.views import APIView
 
-# Get CustomUser model
+# Get the custom user model
 CustomUser = get_user_model()
 
-class UserListView(generics.ListAPIView):
-    queryset = CustomUser.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = YourUserSerializer  # Replace with your actual serializer for the user list
-
-    def get(self, request, *args, **kwargs):
-        # Optionally filter the queryset if necessary
-        users = CustomUser.objects.all()
-        # Serialize the users and return them
-        serialized_users = YourUserSerializer(users, many=True)
-        return Response(serialized_users.data, status=status.HTTP_200_OK)
-
-
-class FollowUser(APIView):
+class FollowUser(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]  # Ensure only authenticated users can follow
 
     def post(self, request, user_id):
@@ -63,7 +49,7 @@ class FollowUser(APIView):
         return Response({"message": f"You are now following {user_to_follow.username}"}, status=status.HTTP_200_OK)
 
 
-class UnfollowUser(APIView):
+class UnfollowUser(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]  # Ensure only authenticated users can unfollow
 
     def post(self, request, user_id):
