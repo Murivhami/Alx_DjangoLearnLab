@@ -44,4 +44,32 @@ def user_feed(request):
 
     return Response(post_data, status=200)
 
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from .models import Post
+from accounts.models import CustomUser
+
+class UserFeedView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure that only authenticated users can access this view
+    
+    def get(self, request):
+        # Get the users the current user is following
+        following_users = request.user.following.all()  # This gives all users the current user follows
+        
+        # Fetch posts from those users, ordered by creation date (most recent first)
+        posts = Post.objects.filter(user__in=following_users).order_by('-created_at')
+        
+        # Serialize posts data and return response
+        post_data = [{
+            "content": post.content,
+            "username": post.user.username,
+            "created_at": post.created_at,
+        } for post in posts]
+        
+        return Response(post_data, status=status.HTTP_200_OK)
+
+
 # Create your views here.
