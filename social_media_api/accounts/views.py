@@ -27,10 +27,23 @@ from rest_framework import permissions, generics
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import get_user_model
-from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 
+# Get CustomUser model
 CustomUser = get_user_model()
+
+class UserListView(generics.ListAPIView):
+    queryset = CustomUser.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = YourUserSerializer  # Replace with your actual serializer for the user list
+
+    def get(self, request, *args, **kwargs):
+        # Optionally filter the queryset if necessary
+        users = CustomUser.objects.all()
+        # Serialize the users and return them
+        serialized_users = YourUserSerializer(users, many=True)
+        return Response(serialized_users.data, status=status.HTTP_200_OK)
+
 
 class FollowUser(APIView):
     permission_classes = [permissions.IsAuthenticated]  # Ensure only authenticated users can follow
@@ -39,15 +52,15 @@ class FollowUser(APIView):
         try:
             user_to_follow = CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
-            return Response({"error": "This user not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
         # Prevent a user from following themselves
         if request.user == user_to_follow:
-            return Response({"error": "You cannot follow."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Add the user to the following list
         request.user.following.add(user_to_follow)
-        return Response({"message": f"You are now following"}, status=status.HTTP_200_OK)
+        return Response({"message": f"You are now following {user_to_follow.username}"}, status=status.HTTP_200_OK)
 
 
 class UnfollowUser(APIView):
@@ -57,12 +70,12 @@ class UnfollowUser(APIView):
         try:
             user_to_unfollow = CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
-            return Response({"error": "This user not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
         # Prevent a user from unfollowing themselves
         if request.user == user_to_unfollow:
-            return Response({"error": "You cannot unfollow."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Remove the user from the following list
         request.user.following.remove(user_to_unfollow)
-        return Response({"message": f"You are now follwoing"}, status=status.HTTP_200_OK)
+        return Response({"message": f"You have unfollowed {user_to_unfollow.username}"}, status=status.HTTP_200_OK)
