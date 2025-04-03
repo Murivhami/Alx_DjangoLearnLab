@@ -60,7 +60,7 @@ class UserFeedView(APIView):
         following_users = request.user.following.all()  # This gives all users the current user follows
         
         # Fetch posts from those users, ordered by creation date (most recent first)
-        posts = Post.objects.filter(user__in=following_users).order_by('-created_at')
+        posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
         
         # Serialize posts data and return response
         post_data = [{
