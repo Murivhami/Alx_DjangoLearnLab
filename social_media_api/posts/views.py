@@ -71,5 +71,52 @@ class UserFeedView(APIView):
         
         return Response(post_data, status=status.HTTP_200_OK)
 
+from django.contrib.contenttypes.models import ContentType
+from .models import Post, Like
+from notifications.models import Notification
+
+class LikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, post_id):
+        post = Post.objects.get(id=post_id)
+        user = request.user
+
+        # Check if the user has already liked the post
+        if Like.objects.filter(post=post, user=user).exists():
+            return Response({"detail": "You have already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a new like
+        like = Like.objects.create(post=post, user=user)
+
+        # Create a notification for the post's author
+        notification = Notification.objects.create(
+            recipient=post.author,
+            actor=user,
+            verb="liked your post",
+            content_type=ContentType.objects.get_for_model(Post),
+            object_id=post.id,
+            target=post
+        )
+
+        return Response({"detail": "Post liked successfully."}, status=status.HTTP_201_CREATED)
+
+class UnlikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, post_id):
+        post = Post.objects.get(id=post_id)
+        user = request.user
+
+        # Check if the user has liked the post
+        like = Like.objects.filter(post=post, user=user).first()
+        if not like:
+            return Response({"detail": "You have not liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Remove the like
+        like.delete()
+
+        # You can also create an "unlike" notification if needed, similar to how we create "like" notifications
+        return Response({"detail": "Post unliked successfully."}, status=status.HTTP_204_NO_CONTENT)
 
 # Create your views here.
