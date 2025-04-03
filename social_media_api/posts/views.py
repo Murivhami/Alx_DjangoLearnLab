@@ -107,7 +107,7 @@ def like_post(request, pk):
 @login_required
 def unlike_post(request, pk):
     # Get the post object
-    post = get_object_or_404(Post, pk=pk)
+    post = generics.get_object_or_404(Post, pk=pk)
     
     # Check if the user has already liked the post
     like = Like.objects.filter(user=request.user, post=post).first()
