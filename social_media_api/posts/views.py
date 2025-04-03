@@ -53,7 +53,7 @@ from .models import Post
 from accounts.models import CustomUser
 
 class UserFeedView(APIView):
-    permission_classes = [IsAuthenticated]  # Ensure that only authenticated users can access this view
+    permission_classes = [permissions.IsAuthenticated]  # Ensure that only authenticated users can access this view
     
     def get(self, request):
         # Get the users the current user is following
