@@ -11,4 +11,7 @@ router.register(r'comments', CommentViewSet, basename='comment')
 urlpatterns = [
      path('', include(router.urls)),
      path('feed/', views.user_feed, name='user_feed'),
+     path('posts/<int:pk>/like', views.follow_user, name='follow_user'),
+     path('posts/<int:pk>/unlike', views.follow_user, name='follow_user'),
+    
 ]
