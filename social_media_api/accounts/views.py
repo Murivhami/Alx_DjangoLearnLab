@@ -35,8 +35,8 @@ class UserListView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]  # Ensure only authenticated users can access this view
 
     def get(self, request):
-        # List all users except the current logged-in user
-        users = CustomUser.objects.exclude(id=request.user.id)  # Exclude the logged-in user
+        # Use CustomUser.objects.all() to get all users
+        users = CustomUser.objects.all()  # This is the part that was missing
         users_list = [{"id": user.id, "username": user.username, "bio": user.bio} for user in users]
         
         return Response(users_list, status=status.HTTP_200_OK)
@@ -75,4 +75,4 @@ class UnfollowUser(generics.GenericAPIView):
 
         # Remove the user from the following list
         request.user.following.remove(user_to_unfollow)
-        return Response({"message": f"You have unfollowed {user_to_unfollow.username}"}, status=status.HTTP_200_OK)
+        return Response({"message": f"You have unfollowed {user_to_unfollow.username}"
