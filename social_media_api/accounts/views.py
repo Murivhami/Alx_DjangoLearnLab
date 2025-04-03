@@ -31,6 +31,17 @@ from django.contrib.auth import get_user_model
 # Get the custom user model
 CustomUser = get_user_model()
 
+class UserListView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]  # Ensure only authenticated users can access this view
+
+    def get(self, request):
+        # List all users except the current logged-in user
+        users = CustomUser.objects.exclude(id=request.user.id)  # Exclude the logged-in user
+        users_list = [{"id": user.id, "username": user.username, "bio": user.bio} for user in users]
+        
+        return Response(users_list, status=status.HTTP_200_OK)
+
+
 class FollowUser(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]  # Ensure only authenticated users can follow
 
