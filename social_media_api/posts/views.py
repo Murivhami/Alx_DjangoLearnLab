@@ -71,23 +71,27 @@ class UserFeedView(APIView):
         
         return Response(post_data, status=status.HTTP_200_OK)
 
-from django.contrib.contenttypes.models import ContentType
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from django.shortcuts import get_object_or_404
 from .models import Post, Like
 from notifications.models import Notification
+from django.contrib.contenttypes.models import ContentType
+
 
 class LikePostView(APIView):
     permission_classes = [IsAuthenticated]
     
     def post(self, request, post_id):
-        post = Post.objects.get(id=post_id)
+        # Fetch the post object by post_id, if not found it raises a 404 error
+        post = get_object_or_404(Post, id=post_id)
         user = request.user
 
-        # Check if the user has already liked the post
-        if Like.objects.filter(post=post, user=user).exists():
-            return Response({"detail": "You have already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+        # Use get_or_create to avoid duplicate likes by the same user on the same post
+        like, created = Like.objects.get_or_create(post=post, user=user)
 
-        # Create a new like
-        like = Like.objects.create(post=post, user=user)
+        if not created:
+            return Response({"detail": "You have already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Create a notification for the post's author
         notification = Notification.objects.create(
@@ -101,11 +105,13 @@ class LikePostView(APIView):
 
         return Response({"detail": "Post liked successfully."}, status=status.HTTP_201_CREATED)
 
+
 class UnlikePostView(APIView):
     permission_classes = [IsAuthenticated]
     
     def post(self, request, post_id):
-        post = Post.objects.get(id=post_id)
+        # Fetch the post object by post_id, if not found it raises a 404 error
+        post = get_object_or_404(Post, id=post_id)
         user = request.user
 
         # Check if the user has liked the post
@@ -116,7 +122,4 @@ class UnlikePostView(APIView):
         # Remove the like
         like.delete()
 
-        # You can also create an "unlike" notification if needed, similar to how we create "like" notifications
         return Response({"detail": "Post unliked successfully."}, status=status.HTTP_204_NO_CONTENT)
-
-# Create your views here.
