@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     #'rest_framework.permissions',
     'rest_framework',
     'django_filters',
+    'notifications',
 ]
 
 MIDDLEWARE = [

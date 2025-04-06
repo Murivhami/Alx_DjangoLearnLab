@@ -75,4 +75,4 @@ class UnfollowUser(generics.GenericAPIView):
 
         # Remove the user from the following list
         request.user.following.remove(user_to_unfollow)
-        return Response({"message": f"You have unfollowed {user_to_unfollow.username}"
+        return Response({"message": f"You have unfollowed {user_to_unfollow.username}"})
